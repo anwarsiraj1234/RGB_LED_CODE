@@ -1,0 +1,77 @@
+/*
+MADE BY SIR ANWAR SIRAJ DS AND AI ROBOTICS
+    RGB LED
+
+    Fading colors of the spectrum on a single RGB LED.
+*/
+
+#include <Arduino.h>        // Arduino core library (not needed in Arduino IDE)
+
+// ---------- Pin definitions (must be PWM pins, marked ~) ----------
+#define RED    9            // Red leg of LED connected to pin 9
+#define GREEN  10           // Green leg of LED connected to pin 10
+#define BLUE   11           // Blue leg of LED connected to pin 11
+
+#define DELAY_TIME 20       // Wait 20 ms per step (speed of fading)
+
+// ---------- Variables ----------
+int redValue;               // Brightness of red   (0-255)
+int greenValue;             // Brightness of green (0-255)
+int blueValue;              // Brightness of blue  (0-255)
+
+void setup()
+{
+  pinMode(RED, OUTPUT);     // Set red pin as output
+  pinMode(GREEN, OUTPUT);   // Set green pin as output
+  pinMode(BLUE, OUTPUT);    // Set blue pin as output
+
+  analogWrite(RED, 255);    // Start with red fully ON
+  analogWrite(GREEN, 0);    // Green OFF
+  analogWrite(BLUE, 0);     // Blue OFF
+}
+
+void loop()
+{
+  // ----- Stage 1: RED -> GREEN -----
+  redValue = 255;           // Start: red full
+  greenValue = 0;           // green off
+  blueValue = 0;            // blue off
+
+  for (int i = 0; i < 255; i++)   // Repeat 255 steps
+  {
+    redValue--;                   // Red gets dimmer by 1
+    greenValue++;                 // Green gets brighter by 1
+    analogWrite(RED, redValue);   // Send new red brightness
+    analogWrite(GREEN, greenValue); // Send new green brightness
+    delay(DELAY_TIME);            // Pause so the eye sees the fade
+  }
+
+  // ----- Stage 2: GREEN -> BLUE -----
+  redValue = 0;             // Red off
+  greenValue = 255;         // Green full
+  blueValue = 0;            // Blue off
+
+  for (int i = 0; i < 255; i++)
+  {
+    greenValue--;                 // Green dims
+    blueValue++;                  // Blue brightens
+    analogWrite(GREEN, greenValue);
+    analogWrite(BLUE, blueValue);
+    delay(DELAY_TIME);
+  }
+
+  // ----- Stage 3: BLUE -> RED -----
+  redValue = 0;             // Red off
+  greenValue = 0;           // Green off
+  blueValue = 255;          // Blue full
+
+  for (int i = 0; i < 255; i++)
+  {
+    blueValue--;                  // Blue dims
+    redValue++;                   // Red brightens
+    analogWrite(BLUE, blueValue);
+    analogWrite(RED, redValue);
+    delay(DELAY_TIME);
+  }
+  // loop() restarts automatically -> endless rainbow cycle
+}
